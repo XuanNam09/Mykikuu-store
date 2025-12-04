@@ -1,63 +1,83 @@
 import React from 'react';
 
-function Header({ showSection, toggleCart, toggleAuth, cartCount, user, handleLogout, searchTerm, setSearchTerm }) {
+function Header({ showSection, toggleCart, toggleAuth, cartCount, user, handleLogout }) {
   return (
-    <header className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-md">
+    <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-lg border-b">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-8">
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => showSection('home')}>
-            <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-xl">K</div>
-            <h1 className="text-2xl font-bold text-orange-500">Kikuu Store</h1>
+        <div className="flex items-center space-x-10">
+          <div 
+            className="flex items-center space-x-3 cursor-pointer hover:scale-105 transition"
+            onClick={() => showSection('home')}
+          >
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+              K
+            </div>
+            <h1 className="text-3xl font-bold text-orange-600">Kikuu Store</h1>
           </div>
+
           <nav className="hidden lg:flex space-x-8">
-            {['home', 'products', 'categories', 'about', 'contact'].map(section => (
-              <a
-                key={section}
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  showSection(section);
-                }}
-                className="text-gray-700 hover:text-orange-500 font-medium py-2 transition-colors"
+            {['home', 'products', 'categories', 'about', 'contact'].map(s => (
+              <button
+                key={s}
+                onClick={() => showSection(s)}
+                className="text-gray-700 hover:text-orange-600 font-semibold text-lg transition"
               >
-                {section === 'home' ? 'Trang chủ' : section === 'products' ? 'Sản phẩm' : section === 'categories' ? 'Danh mục' : section === 'about' ? 'Về chúng tôi' : 'Liên hệ'}
-              </a>
+                {s === 'home' ? 'Trang chủ' : s === 'products' ? 'Sản phẩm' : s === 'categories' ? 'Danh mục' : s === 'about' ? 'Về chúng tôi' : 'Liên hệ'}
+              </button>
             ))}
           </nav>
         </div>
+
         <div className="flex items-center space-x-4">
-          <div className="relative hidden md:block">
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              className="pl-12 pr-4 py-3 w-80 bg-white border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-            />
-            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
-          <button onClick={toggleCart} className="relative btn-primary text-white px-6 py-3 rounded-2xl font-semibold shadow-lg flex items-center">
-            <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9" />
-            </svg>
+          <button
+            onClick={toggleCart}
+            className="relative bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg flex items-center gap-2 transition transform hover:scale-105"
+          >
             Giỏ hàng
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-7 h-7 text-sm flex items-center justify-center font-bold pulse-glow">
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-sm font-bold rounded-full w-7 h-7 flex items-center justify-center animate-pulse">
                 {cartCount}
               </span>
             )}
           </button>
-          {user && user.username ? (
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700 font-medium">Xin chào, {user.username}</span>
-              <button onClick={handleLogout} className="btn-primary text-white px-6 py-3 rounded-2xl font-semibold shadow-lg">Đăng xuất</button>
+
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-gray-800 font-medium">
+                Xin chào, <strong className="text-orange-600">{user.username}</strong>
+              </span>
+
+              <button
+                onClick={() => showSection('myorders')}
+                className="text-orange-600 font-bold hover:underline"
+              >
+                Đơn hàng
+              </button>
+
+              {/* NÚT QUẢN TRỊ – SIÊU ĐẸP */}
+              {user.is_admin && (
+                <button
+                  onClick={() => showSection('admin')}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-2xl font-bold shadow-xl transform hover:scale-110 transition duration-300"
+                >
+                  Quản Trị
+                </button>
+              )}
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-2xl font-bold transition"
+              >
+                Đăng xuất
+              </button>
             </div>
           ) : (
-            <button onClick={toggleAuth} className="btn-primary text-white px-6 py-3 rounded-2xl font-semibold shadow-lg">Đăng nhập / Đăng ký</button>
+            <button
+              onClick={toggleAuth}
+              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-10 py-3 rounded-2xl font-bold shadow-lg transition transform hover:scale-105"
+            >
+              Đăng nhập / Đăng ký
+            </button>
           )}
         </div>
       </div>
